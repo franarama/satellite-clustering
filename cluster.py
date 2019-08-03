@@ -3,6 +3,7 @@ import imageio
 from sklearn.cluster import KMeans
 import numpy as np
 import sys
+import math
 
 """
 Displays provided satellite image
@@ -15,7 +16,7 @@ def show_image(filepath):
 """
 Runs the k-means algorithm on a provided image
 """
-def run_kmeans(filepath, k=5):
+def run_kmeans(filepath, k=2):
 	image = imageio.imread(filepath)
 	x, y, z = image.shape
 	image_2d = get_image_2d(filepath)
@@ -43,16 +44,16 @@ Plots number of clusters vs. within cluster sum of squares
 """
 def elbow_method(image_2d, max_k):
 	wcss = []
-	for i in range(1, max_k):
+	for i in range(2, max_k):
 	    kmeans = KMeans(n_clusters = i, init = 'k-means++', 
 	    	random_state = 42)
 	    kmeans.fit(image_2d)
-	    wcss.append(kmeans.inertia_)
+	    wcss.append(math.log(kmeans.inertia_))
 
-	plt.plot(range(1, max_k), wcss)
+	plt.plot(range(2, max_k), wcss)
 	plt.title('The Elbow Method')
 	plt.xlabel('Number of clusters')
-	plt.ylabel('WCSS')
+	plt.ylabel('log(WCSS)')
 	plt.show()
 
 if __name__ == "__main__":
@@ -66,11 +67,11 @@ if __name__ == "__main__":
     	print("Must provide a filename")
     	sys.exit(0)
 
-    show_image(image)
+    # show_image(image)
     run_kmeans(image)
 
     # max number of clusters to plot with elbow method
-    MAX_K = 10
+    MAX_K = 20
 
     image_2d = get_image_2d(image)
     elbow_method(image_2d, (MAX_K + 1))
