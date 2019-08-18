@@ -1,3 +1,4 @@
 images_no_smoke/
 images_smoke/
 .DS_Store
+.vscode/
