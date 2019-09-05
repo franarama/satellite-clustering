@@ -66,18 +66,35 @@ if __name__ == "__main__":
 
     # parse command line arg
     try:
-        image_jpg = sys.argv[1]
-        image_bin = sys.argv[2]
+        image = sys.argv[1]
 
     # catch no file given
     except IndexError:
-        print("Must provide a jpg file and a bin file")
+        print("Must provide a filename")
         sys.exit(0)
 
+    # Read in raster image
+    img_ds = gdal.Open(image, gdal.GA_ReadOnly)
+    img = np.zeros((img_ds.RasterYSize, img_ds.RasterXSize, img_ds.RasterCount),
+                   gdal_array.GDALTypeCodeToNumericTypeCode(img_ds.GetRasterBand(1).DataType))
 
-    # number of clusters
-    K = 10
+    for b in range(img.shape[2]):
+        img[:, :, b] = img_ds.GetRasterBand(b + 1).ReadAsArray()
 
-    # -- perform hierarchical clustering -- #
-    run_hierarchical_clustering(image_jpg, K)
+    new_shape = (img.shape[0] * img.shape[1], img.shape[2])
+    X = img[:, :, :13].reshape(new_shape)
+    hierarchical_clustering = AgglomerativeClustering()
+    hierarchical_clustering.fit(X)
 
+    X_cluster = hierarchical_clustering.labels_
+    X_cluster = X_cluster.reshape(img[:, :, 0].shape)
+
+    plt.figure(figsize=(20, 20))
+    colors = [(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 1), (1, 1, 0),
+              (0, 1, 1), (0.1, 0.2, 0.5), (0.8, 0.1, 0.3)]
+    # Create the colormap
+    cm = LinearSegmentedColormap.from_list(
+        "my map", colors, N=10)
+    plt.imshow(X_cluster, cmap=cm)
+    plt.colorbar()
+    plt.show()
