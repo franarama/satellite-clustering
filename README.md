@@ -2,15 +2,14 @@
 
 `read_multispectral.py`
 
-Makes a satellite image into a jpg.
-* Must be run using Python 2. 
-* To run: `python read_multispectral.py /path/to/bin/file` where the path to the bin file is the path to the multispectral image (BSQ format), that also has a `.hdr` file.
+displays a multispectral image. Expects image to be in the following "open" format: ENVI "binary", data type: IEEE 32-bit floating point (ENVI type 4), byte-order: zero, interleave: band-sequential (BSQ)
+* Designed for python 2.7, could be run with python 3. with some minor modification
+* To run: `python read_multispectral.py /path/to/bin/file` where the path to the ".bin" file is the path to the multispectral image (in format above); note: a `.hdr` file must also be present.
 
 `cluster.py`
 
-Runs k-means and elbow method on given satellite image.
-* Provides functions to run k-means clustering and plot elbow method. 
-* Created for Python 3.
-* First run `read_multispectral.py` to get the satellite image as a jpg
-* To run: `python3 cluster.py /path/to/jpg/satellite/image`
-
+Runs hierarchical agglomerative clustering on given satellite image.
+* Runs agglomerative clustering method
+* Compatible with python 2 and 3
+* First run `read_multispectral.py` to inspect the satellite image
+* To run: `python cluster.py /path/to/bin/file
