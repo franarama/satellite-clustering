@@ -54,10 +54,10 @@ data = np.fromfile(sys.argv[1], '<f4').reshape((bands, lines * samples))
 print("bytes read: " + str(data.size))
 
 # select bands for visualization: default value [3, 2, 1]. Try changing to anything from 0 to 12-1==11! 
-band_select = [3, 2, 1]
-rgb = np.zeros((samples, lines, 3))
+band_select = [10, 9, 8]  #[3, 2, 1]
+rgb = np.zeros((lines, samples, 3))
 for i in range(0, 3):
-    rgb[:,:,i] = data[band_select[i],:].reshape((samples, lines))
+    rgb[:,:,i] = data[band_select[i],:].reshape((lines, samples))
 
 # plot the image
 plt.imshow(rgb)
