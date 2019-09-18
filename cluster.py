@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     # reshape the image band by band
     for b in range(img.shape[2]):
-        print "reading band", b + 1, "of", img.shape[2]
+        # print "reading band", b + 1, "of", img.shape[2]
         img[:, :, b] = img_ds.GetRasterBand(b + 1).ReadAsArray()
 
     # reshape image again to match expected format for scikit-learn
@@ -58,7 +58,11 @@ if __name__ == "__main__":
     #cm = LinearSegmentedColormap.from_list("my map", colors, N=10)
     plt.imshow(X_cluster) #, cmap=cm)
     plt.colorbar()
-    plt.show()
+    plt.tight_layout()
+    #plt.show()
+    plot_file = image + ".png"
+    plt.savefig(plot_file, orientation='portrait')
+    print "plot written to file: " + plot_file
 
 """
 Run hierarchical clustering
@@ -109,4 +113,3 @@ def get_image_2d(filepath):
     image_2d = image.reshape(x*y, z)
     return image_2d
 '''
-
