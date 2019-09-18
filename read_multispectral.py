@@ -17,6 +17,8 @@ installation of numpy and matplotlib (Ubuntu):
     sudo apt install python-matplotlib python-numpy
 '''
 import sys
+import copy
+import math
 import numpy as np
 import os.path as path
 import matplotlib.pyplot as plt
@@ -54,12 +56,32 @@ data = np.fromfile(sys.argv[1], '<f4').reshape((bands, lines * samples))
 print("bytes read: " + str(data.size))
 
 # select bands for visualization: default value [3, 2, 1]. Try changing to anything from 0 to 12-1==11! 
-band_select = [10, 9, 8]  #[3, 2, 1]
+band_select = [3, 2, 1]
 rgb = np.zeros((lines, samples, 3))
 for i in range(0, 3):
-    rgb[:,:,i] = data[band_select[i],:].reshape((lines, samples))
+    rgb[:, :, i] = data[band_select[i],:].reshape((lines, samples))
+    
+    # scale band in range 0 to 1
+    rgb_min, rgb_max = np.min(rgb[:, :, i]), np.max(rgb[:, :, i])
+    rgb[:, :, i] -= rgb_min
+    rgb[:, :, i] /= (rgb_max - rgb_min)
+
+    # so called "2% linear stretch"
+    values = copy.deepcopy(rgb[:,:,i]) # values.shape
+    values = values.reshape(np.prod(values.shape))
+    values = values.tolist() # len(values)
+    values.sort()
+    npx = len(values) # number of pixels
+    if values[-1] < values[0]:
+        err("failed to sort")
+
+    rgb_min = values[int(math.floor(float(npx)*0.02))]
+    rgb_max = values[int(math.floor(float(npx)*0.98))]
+    rgb[:, :, i] -= rgb_min
+    rgb[:, :, i] /= (rgb_max - rgb_min)
 
 # plot the image
 plt.imshow(rgb)
 plt.tight_layout()
+plt.savefig(fn + ".png")
 plt.show()
