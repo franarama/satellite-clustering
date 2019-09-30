@@ -1,7 +1,6 @@
 ENVI
-description = {Tue Jun 25 14:38:29 2019}
-samples = 112
-lines = 108
+samples = 133
+lines = 121
 bands = 12
 header offset = 0
 file type = ENVI Standard
